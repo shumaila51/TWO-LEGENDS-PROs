@@ -94,8 +94,11 @@
         }
         
         const genAI = new window.GoogleGenerativeAI(GEMINI_API_KEY);
+        
+        // !!! --- THIS IS THE FIX --- !!!
+        // Using "gemini-pro" instead of "gemini-1.5-flash-latest"
         const model = genAI.getGenerativeModel({
-          model: "gemini-1.5-flash-latest",
+          model: "gemini-pro", // <--- THE FIX IS HERE
           systemInstruction: SYSTEM_INSTRUCTION,
           tools: [{ googleSearch: {} }],
         });
@@ -103,20 +106,17 @@
         try {
           const imageParts = files.filter(file => file.type.startsWith("image/")).map(fileToGenerativePart);
           
-          // !!! --- THIS IS THE FIX --- !!!
-          // The API expects all parts to be objects. The text prompt must be wrapped in {text: prompt}.
           const partsToSend = [...imageParts];
           if (prompt && prompt.trim() !== '') {
               partsToSend.push({ text: prompt });
           }
-          // !!! --- END OF FIX --- !!!
 
           if (partsToSend.length === 0) {
             throw new Error("Cannot send an empty message.");
           }
 
           const result = await model.generateContent({
-              contents: [{ role: 'user', parts: partsToSend }], // Use the corrected parts
+              contents: [{ role: 'user', parts: partsToSend }],
               generationConfig: { temperature: 0.7 }
           });
           
