@@ -172,6 +172,18 @@
 
       const root = createRoot(document.getElementById('root'));
       root.render(<App />);
+        <audio 
+        ref={audioRef} 
+        loop 
+        src={musicSrc || ''}
+      />
+       <input
+        type="file"
+        ref={musicInputRef}
+        onChange={handleMusicUpload}
+        accept="audio/*"
+        className="hidden"
+      />
 
     </script>
 </body>
